@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="SetJavaScriptEnabled">
+        <ignore path="src\com\taskit\client\LoginActivity.java" />
+        <ignore path="src\com\taskit\client\OAuth2Activity.java" />
+    </issue>
+</lint>
