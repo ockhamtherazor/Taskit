@@ -7,8 +7,8 @@
         android:minSdkVersion="11"
         android:targetSdkVersion="15" />
 
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.ACCOUNT_MANAGER" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -28,6 +28,15 @@
         <activity
             android:name=".TaskActivity"
             android:label="@string/title_activity_task" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".NewTaskActivity"
+            android:label="@string/title_activity_new_task" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

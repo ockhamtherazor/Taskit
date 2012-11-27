@@ -2,18 +2,71 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     android:orientation="vertical" >
-    
+
+    <TextView
+        android:id="@+id/login_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="50dp"
+        android:gravity="center"
+        android:text="@string/login_text"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+
     <Button
         android:id="@+id/select_account_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/select_account" />
-    
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="10dp"
+        android:drawSelectorOnTop="true"
+        android:background="@drawable/button_background"
+        android:text="@string/select_account"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp" />
+
     <Button
-        android:id="@+id/login_button"
-        android:layout_width="wrap_content"
+        android:id="@+id/facebook_account_button"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/button_background"
+        android:text="@string/enter_facebook_account"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp" />
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/login" />
-    
+        android:layout_marginTop="60dp"
+        android:orientation="horizontal"
+        android:weightSum="2" >
+
+        <Button
+            android:id="@+id/exit_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_background"
+            android:text="@string/exit_button"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_background"
+            android:text="@string/login_button"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp" />
+        
+    </LinearLayout>
+
 </LinearLayout>

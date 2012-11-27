@@ -35,7 +35,6 @@ public class Task {
 	// ETag of the resource.
 	private String etag;
 
-	
 	// notes describing the task. Optional.
 	private String notes;
 

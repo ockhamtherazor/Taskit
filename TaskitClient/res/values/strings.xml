@@ -2,14 +2,23 @@
 
     <string name="app_name">TaskitClient</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_login">TaskitLogin</string>
-    <string name="title_activity_task">Taskit</string>
+    <string name="title_activity_login">Taskit</string>
+    <string name="title_activity_task">Task List</string>
+    <string name="title_activity_new_task">New Task</string>
     <string name="tab_current">Current</string>
     <string name="tab_history">History</string>
     <string name="tab_setting">Settings</string>
-    <string name="select_account">Select Your Account</string>
-    <string name="login">Login</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_oauth2">OAuth2Activity</string>
+    <string name="login_text">Welcome to Taskit!</string>
+    <string name="select_account">Select a Google Account</string>
+    <string name="enter_facebook_account">Select a Facebook Account (optional)</string>
+    <string name="login_button">Login</string>
+    <string name="exit_button">Exit</string>
+    <string name="add_text">Add New Task</string>
+    <string name="name_text">Name:</string>
+    <string name="desc_text">Task Description:</string>
+    <string name="loc_text">Location:</string>
+    <string name="date_button">Date and Time:</string>
+    <string name="priority_button">Task Priority:</string>
+    <string name="add_task_button">Add Task</string>
 
 </resources>
