@@ -16,24 +16,25 @@ public final class R {
         public static final int ic_launcher=0x7f020002;
     }
     public static final class id {
-        public static final int add_task_button=0x7f070011;
-        public static final int add_task_button_1=0x7f070013;
-        public static final int add_task_button_2=0x7f070015;
+        public static final int add_task_button=0x7f070012;
+        public static final int add_task_button_1=0x7f070014;
+        public static final int add_task_button_2=0x7f070016;
         public static final int add_text=0x7f070006;
-        public static final int current_list=0x7f070012;
+        public static final int cancel_button=0x7f070011;
+        public static final int current_list=0x7f070013;
         public static final int date_button=0x7f07000f;
         public static final int desc=0x7f07000b;
         public static final int desc_text=0x7f07000a;
         public static final int exit_button=0x7f070004;
         public static final int facebook_account_button=0x7f070002;
         public static final int footer=0x7f070003;
-        public static final int history_list=0x7f070014;
+        public static final int history_list=0x7f070015;
         public static final int loc_text=0x7f07000d;
         public static final int location=0x7f07000e;
         public static final int location_footer=0x7f07000c;
         public static final int login_button=0x7f070005;
         public static final int login_text=0x7f070000;
-        public static final int menu_settings=0x7f070016;
+        public static final int menu_settings=0x7f070017;
         public static final int name=0x7f070009;
         public static final int name_footer=0x7f070007;
         public static final int name_text=0x7f070008;
@@ -53,19 +54,20 @@ public final class R {
         public static final int activity_task=0x7f060002;
     }
     public static final class string {
-        public static final int add_task_button=0x7f040013;
-        public static final int add_text=0x7f04000d;
+        public static final int add_task_button=0x7f040014;
+        public static final int add_text=0x7f04000e;
         public static final int app_name=0x7f040000;
-        public static final int date_button=0x7f040011;
-        public static final int desc_text=0x7f04000f;
+        public static final int cancel_button=0x7f04000d;
+        public static final int date_button=0x7f040012;
+        public static final int desc_text=0x7f040010;
         public static final int enter_facebook_account=0x7f04000a;
         public static final int exit_button=0x7f04000c;
-        public static final int loc_text=0x7f040010;
+        public static final int loc_text=0x7f040011;
         public static final int login_button=0x7f04000b;
         public static final int login_text=0x7f040008;
         public static final int menu_settings=0x7f040001;
-        public static final int name_text=0x7f04000e;
-        public static final int priority_button=0x7f040012;
+        public static final int name_text=0x7f04000f;
+        public static final int priority_button=0x7f040013;
         public static final int select_account=0x7f040009;
         public static final int tab_current=0x7f040005;
         public static final int tab_history=0x7f040006;

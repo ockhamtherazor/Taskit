@@ -13,6 +13,7 @@
     <string name="enter_facebook_account">Select a Facebook Account (optional)</string>
     <string name="login_button">Login</string>
     <string name="exit_button">Exit</string>
+    <string name="cancel_button">Cancel</string>
     <string name="add_text">Add New Task</string>
     <string name="name_text">Name:</string>
     <string name="desc_text">Task Description:</string>

@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.taskit.client.fragment.CurrentFragment;
 import com.taskit.client.fragment.HistoryFragment;
+import com.taskit.client.util.IDataPuller;
 import com.taskit.client.util.ProgressDialogUtil;
 import com.taskit.client.util.UseTasksAPI;
 
@@ -24,16 +25,17 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 
-public class TaskActivity extends Activity {
-
-	Account account;
+public class TaskActivity extends Activity implements IDataPuller {
+	
+	// the selected user account
+	private Account account;
 	
 	// display a progress dialog when loading tasks
-	ProgressDialog dialog;
+	private ProgressDialog dialog;
 	ProgressDialogUtil dialogUtil = new ProgressDialogUtil();
 	
-	// to handle message returned from tasks API
-	Handler handler;
+	// handle message returned from tasks API
+	private Handler handler;
 	
 	private static final String ERROR_TAG = "TaskActivity.java";
 	private static final String AUTH_TOKEN_TYPE = "oauth2:https://www.googleapis.com/auth/tasks";
@@ -50,6 +52,24 @@ public class TaskActivity extends Activity {
         Bundle extras = getIntent().getExtras();
     	account = extras.getParcelable("account");
         
+    	// handle message returned from tasks API
+    	handler = new Handler(new Handler.Callback() {
+			
+			public boolean handleMessage(Message msg) {
+				if (msg.getData().containsKey("status")) {
+					String text = msg.getData().getString("status");
+					if (text.equals("load complete")) {
+						dialogUtil.dismissProgressDialog(dialog,
+								"Complete loading tasks");
+						// TODO
+					}
+				} else {
+					Log.e(ERROR_TAG, "fail to receive message");
+				}
+				return true;
+			}
+		});
+    	
         // setup action bar for tabs
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -68,22 +88,6 @@ public class TaskActivity extends Activity {
         				this, "history", HistoryFragment.class));
         actionBar.addTab(tab);
         
-        handler = new Handler(new Handler.Callback() {
-			
-			public boolean handleMessage(Message msg) {
-				if (msg.getData().containsKey("status")) {
-					String text = msg.getData().getString("status");
-					if (text.equals("load complete")) {
-						dialogUtil.dismissProgressDialog(dialog,
-								"Complete loading tasks");
-						// TODO
-					}
-				} else {
-					Log.e(ERROR_TAG, "fail to receive message");
-				}
-				return true;
-			}
-		});
     }
     
     @Override
@@ -155,5 +159,10 @@ public class TaskActivity extends Activity {
     	}
 
     }
+    
+    // pass the user's account to fragments
+	public Account getAccount() {
+		return account;
+	}
     
 }
