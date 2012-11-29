@@ -17,7 +17,9 @@ public class TaskitTabListener<T extends Fragment> implements TabListener {
 	private final String tag;
 	private final Class<T> fragmentClass;
 
-	public TaskitTabListener(Activity activity, String tag, Class<T> c) {
+	public TaskitTabListener(Activity activity,
+			String tag,
+			Class<T> c) {
 		this.activity = activity;
 		this.tag = tag;
 		this.fragmentClass = c;

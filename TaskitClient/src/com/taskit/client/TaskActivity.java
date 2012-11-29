@@ -5,7 +5,6 @@ import java.io.IOException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.taskit.client.fragment.CurrentFragment;
 import com.taskit.client.fragment.HistoryFragment;
-import com.taskit.client.fragment.SettingFragment;
 import com.taskit.client.util.ProgressDialogUtil;
 import com.taskit.client.util.UseTasksAPI;
 
@@ -27,14 +26,14 @@ import android.view.Menu;
 
 public class TaskActivity extends Activity {
 
-	private Account account;
+	Account account;
 	
 	// display a progress dialog when loading tasks
-	private ProgressDialog dialog;
+	ProgressDialog dialog;
 	ProgressDialogUtil dialogUtil = new ProgressDialogUtil();
 	
 	// to handle message returned from tasks API
-	private Handler handler;
+	Handler handler;
 	
 	private static final String ERROR_TAG = "TaskActivity.java";
 	private static final String AUTH_TOKEN_TYPE = "oauth2:https://www.googleapis.com/auth/tasks";
@@ -48,12 +47,15 @@ public class TaskActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
         
+        Bundle extras = getIntent().getExtras();
+    	account = extras.getParcelable("account");
+        
         // setup action bar for tabs
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         actionBar.setDisplayShowTitleEnabled(false);
-
-        // add all 3 tabs
+        
+        // add all 2 tabs
         Tab tab = actionBar.newTab()
         		.setText(R.string.tab_current)
         		.setTabListener(new TaskitTabListener<CurrentFragment>(
@@ -64,12 +66,6 @@ public class TaskActivity extends Activity {
         		.setText(R.string.tab_history)
         		.setTabListener(new TaskitTabListener<HistoryFragment>(
         				this, "history", HistoryFragment.class));
-        actionBar.addTab(tab);
-        
-        tab = actionBar.newTab()
-        		.setText(R.string.tab_setting)
-        		.setTabListener(new TaskitTabListener<SettingFragment>(
-        				this, "settings", SettingFragment.class));
         actionBar.addTab(tab);
         
         handler = new Handler(new Handler.Callback() {
@@ -93,9 +89,6 @@ public class TaskActivity extends Activity {
     @Override
     protected void onResume() {
     	super.onResume();
-    	
-    	Bundle extras = getIntent().getExtras();
-    	account = extras.getParcelable("account");
     	
     	AccountManager accountManager = 
 				AccountManager.get(TaskActivity.this);
@@ -162,4 +155,5 @@ public class TaskActivity extends Activity {
     	}
 
     }
+    
 }

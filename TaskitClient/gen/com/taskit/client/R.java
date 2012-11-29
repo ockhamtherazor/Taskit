@@ -17,19 +17,23 @@ public final class R {
     }
     public static final class id {
         public static final int add_task_button=0x7f070011;
+        public static final int add_task_button_1=0x7f070013;
+        public static final int add_task_button_2=0x7f070015;
         public static final int add_text=0x7f070006;
+        public static final int current_list=0x7f070012;
         public static final int date_button=0x7f07000f;
         public static final int desc=0x7f07000b;
         public static final int desc_text=0x7f07000a;
         public static final int exit_button=0x7f070004;
         public static final int facebook_account_button=0x7f070002;
         public static final int footer=0x7f070003;
+        public static final int history_list=0x7f070014;
         public static final int loc_text=0x7f07000d;
         public static final int location=0x7f07000e;
         public static final int location_footer=0x7f07000c;
         public static final int login_button=0x7f070005;
         public static final int login_text=0x7f070000;
-        public static final int menu_settings=0x7f070012;
+        public static final int menu_settings=0x7f070016;
         public static final int name=0x7f070009;
         public static final int name_footer=0x7f070007;
         public static final int name_text=0x7f070008;
@@ -42,7 +46,6 @@ public final class R {
         public static final int activity_task=0x7f030002;
         public static final int fragment_current=0x7f030003;
         public static final int fragment_history=0x7f030004;
-        public static final int fragment_setting=0x7f030005;
     }
     public static final class menu {
         public static final int activity_login=0x7f060000;

@@ -23,7 +23,7 @@ public class UseTasksAPI {
 	private static final String API_KEY = "AIzaSyD_H4i4MdHS5OVPXHbmosl7YKuIVZRvz5I";
 	private static final String ERROR_TAG = "UseTasksAPI.java";
 	
-	public List<Task> loadCurrentTasks(GoogleCredential credential) {
+	public List<Task> loadTasks(GoogleCredential credential) {
 		
 		List<Task> tasks = new ArrayList<Task>();
 		
@@ -37,11 +37,6 @@ public class UseTasksAPI {
 		
 		try {
 			tasks = service.tasks().list("@taskit").execute().getItems();
-			for (Task temp : tasks) {
-				if (temp.getStatus() == "completed") {
-					tasks.remove(temp);
-				}
-			}
 		} catch (IOException e) {
 			Log.e(ERROR_TAG, "fail to load current tasks", e);
 		}
@@ -49,34 +44,7 @@ public class UseTasksAPI {
 		return tasks;
 		
 	}
-	
-	public List<Task> loadHistroyTasks(GoogleCredential credential) {
-		
-		List<Task> tasks = new ArrayList<Task>();
-		
-		// get an instance of Tasks API service
-		Tasks service = new Tasks.Builder(new NetHttpTransport(),
-				new JacksonFactory(),
-				credential)
-		.setApplicationName("Taskit")
-		.setTasksRequestInitializer(new TasksRequestInitializer(API_KEY))
-		.build();
-		
-		try {
-			tasks = service.tasks().list("@taskit").execute().getItems();
-			for (Task temp : tasks) {
-				if (temp.getStatus() == "needsAction") {
-					tasks.remove(temp);
-				}
-			}
-		} catch (IOException e) {
-			Log.e(ERROR_TAG, "fail to load history tasks", e);
-		}
-		
-		return tasks;
-		
-	}
-	
+
 	public Boolean addNewTask(GoogleCredential credential,
 			String name,
 			String description,
