@@ -32,7 +32,6 @@ public class CurrentFragment extends Fragment {
 	    super.onAttach(activity);
 	    dataPuller = (IDataPuller) activity;
 	    account = dataPuller.getAccount();
-	    Log.d("test", account.toString());
 	    // TODO       
 	}
 	

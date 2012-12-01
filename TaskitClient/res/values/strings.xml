@@ -18,8 +18,9 @@
     <string name="name_text">Name:</string>
     <string name="desc_text">Task Description:</string>
     <string name="loc_text">Location:</string>
-    <string name="date_button">Date and Time:</string>
-    <string name="priority_button">Task Priority:</string>
+    <string name="date_button">Set Date</string>
+    <string name="time_button">Set Time</string>
+    <string name="priority_button">Set Task Priority</string>
     <string name="add_task_button">Add Task</string>
 
 </resources>

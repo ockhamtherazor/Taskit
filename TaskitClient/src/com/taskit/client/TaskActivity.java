@@ -60,11 +60,13 @@ public class TaskActivity extends Activity implements IDataPuller {
 					String text = msg.getData().getString("status");
 					if (text.equals("load complete")) {
 						dialogUtil.dismissProgressDialog(dialog,
-								"Complete loading tasks");
+							"Complete loading tasks");
 						// TODO
 					}
 				} else {
 					Log.e(ERROR_TAG, "fail to receive message");
+					dialogUtil.dismissProgressDialog(dialog, 
+							"Fail loading tasks");
 				}
 				return true;
 			}
@@ -125,7 +127,7 @@ public class TaskActivity extends Activity implements IDataPuller {
     	        
     	        // show dialog indicating that the application is loading tasks
     	        dialog = new ProgressDialog(TaskActivity.this);
-    	        dialogUtil.setUpProgressDialog(dialog, "Loading Tasks...");
+    	        dialogUtil.setUpProgressDialog(dialog, "Loading tasks...");
     	        dialog.show();
     	        
     	        // load tasks in worker thread

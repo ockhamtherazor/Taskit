@@ -6,6 +6,7 @@ package com.taskit.client.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.util.Log;
@@ -17,6 +18,7 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.tasks.Tasks;
 import com.google.api.services.tasks.TasksRequestInitializer;
 import com.google.api.services.tasks.model.Task;
+import com.google.api.services.tasks.model.TaskList;
 
 public class UseTasksAPI {
 	
@@ -49,8 +51,16 @@ public class UseTasksAPI {
 			String name,
 			String description,
 			String location,
-			DateTime date,
+			Long date,
 			int priority) {
+
+		// convert data to API format
+		String note = String.valueOf(priority)
+				+ "@#*"
+				+ location
+				+ "@#*"
+				+ description;
+		DateTime dateTime = new DateTime(date, -5);
 
 		// get an instance of Tasks API service
 		Tasks service = new Tasks.Builder(new NetHttpTransport(),
@@ -61,9 +71,35 @@ public class UseTasksAPI {
 		.build();
 		
 		try {
+			
+			/*
+			// TODO move this to load task
+			// Getting all the Task lists
+			List<String> listTitle = new ArrayList<String>();
+			try {
+				List<TaskList> taskLists = service
+						.tasklists()
+						.list()
+						.execute()
+						.getItems();
+				
+				for (TaskList t : taskLists) {
+					listTitle.add(t.getTitle());
+				}
+			} finally {
+				if (!listTitle.contains("taskit")) {
+					TaskList taskList = new TaskList();
+					taskList.setTitle("taskit");
+					service.tasklists().insert(taskList).execute();
+				}
+			}
+			*/
+			
 			Task task = new Task();
-			task.setTitle(name);
-			Task result = service.tasks().insert("@taskit", task).execute();
+			task.setTitle(name)
+				.setNotes(note)
+				.setDue(dateTime);
+			service.tasks().insert("@default", task).execute();
 			
 			return true;
 		} catch (IOException e) {
