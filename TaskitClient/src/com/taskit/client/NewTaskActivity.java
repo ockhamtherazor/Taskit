@@ -2,7 +2,6 @@ package com.taskit.client;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Date;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.taskit.client.util.DateTimeUtil;

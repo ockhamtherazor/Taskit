@@ -6,7 +6,6 @@ package com.taskit.client.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import android.util.Log;
@@ -18,16 +17,16 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.tasks.Tasks;
 import com.google.api.services.tasks.TasksRequestInitializer;
 import com.google.api.services.tasks.model.Task;
-import com.google.api.services.tasks.model.TaskList;
 
 public class UseTasksAPI {
 	
 	private static final String API_KEY = "AIzaSyD_H4i4MdHS5OVPXHbmosl7YKuIVZRvz5I";
 	private static final String ERROR_TAG = "UseTasksAPI.java";
 	
-	public List<Task> loadTasks(GoogleCredential credential) {
+	public List<Task> loadCurrentTasks(GoogleCredential credential) {
 		
 		List<Task> tasks = new ArrayList<Task>();
+		List<Task> currentTasks = new ArrayList<Task>();
 		
 		// get an instance of Tasks API service
 		Tasks service = new Tasks.Builder(new NetHttpTransport(),
@@ -38,12 +37,45 @@ public class UseTasksAPI {
 		.build();
 		
 		try {
-			tasks = service.tasks().list("@taskit").execute().getItems();
+			tasks = service.tasks().list("@default").execute().getItems();
+			for (Task t : tasks) {
+				if (t.getStatus().equals("needsAction")) {
+					currentTasks.add(t);
+				}
+			}
 		} catch (IOException e) {
 			Log.e(ERROR_TAG, "fail to load current tasks", e);
 		}
 		
-		return tasks;
+		return currentTasks;
+		
+	}
+	
+	public List<Task> loadHistoryTasks(GoogleCredential credential) {
+		
+		List<Task> tasks = new ArrayList<Task>();
+		List<Task> historyTasks = new ArrayList<Task>();
+		
+		// get an instance of Tasks API service
+		Tasks service = new Tasks.Builder(new NetHttpTransport(),
+				new JacksonFactory(),
+				credential)
+		.setApplicationName("Taskit")
+		.setTasksRequestInitializer(new TasksRequestInitializer(API_KEY))
+		.build();
+		
+		try {
+			tasks = service.tasks().list("@default").execute().getItems();
+			for (Task t : tasks) {
+				if (t.getStatus().equals("completed")) {
+					historyTasks.add(t);
+				}
+			}
+		} catch (IOException e) {
+			Log.e(ERROR_TAG, "fail to load current tasks", e);
+		}
+		
+		return historyTasks;
 		
 	}
 

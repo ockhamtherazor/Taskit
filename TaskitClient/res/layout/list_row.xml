@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:background="@drawable/button_background"
+    android:descendantFocusability="blocksDescendants" >
+
+    <ImageView
+        android:id="@+id/item_priority"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="7dp"
+        android:contentDescription="@string/image_desc" />
+
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="255dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/item_priority"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/item_description"
+        android:layout_marginTop="2dp"
+        android:gravity="right"
+        android:textColor="#FFFFFF"
+        android:layout_width="255dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_title"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/item_priority"
+        android:textSize="15sp" />
+    
+    <TextView
+        android:id="@+id/item_id"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:textSize="0sp"
+        android:visibility="invisible" />
+
+</RelativeLayout>
