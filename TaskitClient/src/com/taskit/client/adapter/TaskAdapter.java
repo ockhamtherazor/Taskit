@@ -73,9 +73,6 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 						break;
 			}
 		}
-
-		row.setClickable(true);
-		row.setFocusable(true);
 		
 		return row;
 		

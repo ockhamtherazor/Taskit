@@ -78,6 +78,28 @@ public class UseTasksAPI {
 		return historyTasks;
 		
 	}
+	
+	public Task getTask(GoogleCredential credential,
+			String taskId) {
+		
+		Task task = new Task();;
+		
+		// get an instance of Tasks API service
+		Tasks service = new Tasks.Builder(new NetHttpTransport(),
+				new JacksonFactory(),
+				credential)
+		.setApplicationName("Taskit")
+		.setTasksRequestInitializer(new TasksRequestInitializer(API_KEY))
+		.build();
+		
+		try {
+			task = service.tasks().get("@default", taskId).execute();
+		} catch (IOException e) {
+			Log.e(ERROR_TAG, "fail to set task as completed", e);
+		}
+		
+		return task;
+	}
 
 	public Boolean addNewTask(GoogleCredential credential,
 			String name,
@@ -104,39 +126,100 @@ public class UseTasksAPI {
 		
 		try {
 			
-			/*
-			// TODO move this to load task
-			// Getting all the Task lists
-			List<String> listTitle = new ArrayList<String>();
-			try {
-				List<TaskList> taskLists = service
-						.tasklists()
-						.list()
-						.execute()
-						.getItems();
-				
-				for (TaskList t : taskLists) {
-					listTitle.add(t.getTitle());
-				}
-			} finally {
-				if (!listTitle.contains("taskit")) {
-					TaskList taskList = new TaskList();
-					taskList.setTitle("taskit");
-					service.tasklists().insert(taskList).execute();
-				}
-			}
-			*/
-			
 			Task task = new Task();
-			task.setTitle(name)
-				.setNotes(note)
-				.setDue(dateTime);
+			task.setTitle(name).setNotes(note).setDue(dateTime);
 			service.tasks().insert("@default", task).execute();
 			
 			return true;
+			
 		} catch (IOException e) {
 			Log.e(ERROR_TAG, "fail to add new task", e);
 			return false;
 		}		
 	}
+	
+	public Boolean updateTask(GoogleCredential credential,
+			String taskId,
+			String name,
+			String description,
+			String location,
+			Long date,
+			int priority) {
+
+		// convert data to API format
+		String note = String.valueOf(priority)
+				+ "@#*"
+				+ location
+				+ "@#*"
+				+ description;
+		DateTime dateTime = new DateTime(date, -5);
+
+		// get an instance of Tasks API service
+		Tasks service = new Tasks.Builder(new NetHttpTransport(),
+				new JacksonFactory(),
+				credential)
+		.setApplicationName("Taskit")
+		.setTasksRequestInitializer(new TasksRequestInitializer(API_KEY))
+		.build();
+		
+		try {
+			
+			Task task = service.tasks().get("@default", taskId).execute();
+			task.setTitle(name).setNotes(note).setDue(dateTime);
+			service.tasks().update("@default", task.getId(), task).execute();
+			
+			return true;
+			
+		} catch (IOException e) {
+			Log.e(ERROR_TAG, "fail to add new task", e);
+			return false;
+		}		
+	}
+	
+	public Boolean setTaskAsCompleted(GoogleCredential credential,
+			String taskId) {
+
+		// get an instance of Tasks API service
+		Tasks service = new Tasks.Builder(new NetHttpTransport(),
+				new JacksonFactory(),
+				credential)
+		.setApplicationName("Taskit")
+		.setTasksRequestInitializer(new TasksRequestInitializer(API_KEY))
+		.build();
+		
+		try {
+			Task task = service.tasks().get("@default", taskId).execute();
+			task.setStatus("completed");
+			service.tasks().update("@default", task.getId(), task).execute();
+			
+			return true;
+			
+		} catch (IOException e) {
+			Log.e(ERROR_TAG, "fail to set task as completed", e);
+			return false;
+		}		
+	}
+	
+	public Boolean setTaskAsDeleted(GoogleCredential credential,
+			String taskId) {
+
+		// get an instance of Tasks API service
+		Tasks service = new Tasks.Builder(new NetHttpTransport(),
+				new JacksonFactory(),
+				credential)
+		.setApplicationName("Taskit")
+		.setTasksRequestInitializer(new TasksRequestInitializer(API_KEY))
+		.build();
+		
+		try {
+			service.tasks().delete("@default", taskId).execute();
+			
+			return true;
+			
+		} catch (IOException e) {
+			Log.e(ERROR_TAG, "fail to set task as deleted", e);
+			return false;
+		}		
+	}
+	
 }

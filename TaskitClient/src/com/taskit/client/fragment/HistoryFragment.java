@@ -11,6 +11,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.services.tasks.model.Task;
 import com.taskit.client.NewTaskActivity;
 import com.taskit.client.R;
+import com.taskit.client.UpdateTaskActivity;
 import com.taskit.client.adapter.TaskAdapter;
 import com.taskit.client.util.IDataPuller;
 import com.taskit.client.util.ProgressDialogUtil;
@@ -23,8 +24,10 @@ import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,6 +37,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 
 public class HistoryFragment extends ListFragment {
 
@@ -43,12 +47,18 @@ public class HistoryFragment extends ListFragment {
 	// user's account
 	private Account account;
 	
+	// API access object
+	private GoogleCredential credential;
+	
 	// user tasks
 	private List<Task> historyTasks;
 
 	// display a progress dialog when loading tasks
 	private ProgressDialog dialog;
 	ProgressDialogUtil dialogUtil = new ProgressDialogUtil();
+	
+	// display a dialog on list item clicked
+	private AlertDialog.Builder builder;
 	
 	// handle message returned from tasks API
 	private Handler handler;
@@ -79,11 +89,16 @@ public class HistoryFragment extends ListFragment {
 					if (text.equals("load complete")) {
 						dialogUtil.dismissProgressDialog(dialog,
 							"Complete loading tasks");
-						TaskAdapter adapter = new TaskAdapter(getActivity(),
-								R.layout.list_row,
-								historyTasks);
-						setListAdapter(adapter);
+					} else if (text.equals("process complete")) {
+						dialogUtil.dismissProgressDialog(dialog,
+								"Complete processing");
 					}
+					
+					// set up adapter to show task list
+					TaskAdapter adapter = new TaskAdapter(getActivity(),
+							R.layout.list_row,
+							historyTasks);
+					setListAdapter(adapter);
 				} else {
 					Log.e(ERROR_TAG, "fail to receive message");
 					dialogUtil.dismissProgressDialog(dialog, 
@@ -131,6 +146,73 @@ public class HistoryFragment extends ListFragment {
 		
 	}
 	
+	@Override
+	public void onListItemClick (ListView l, View v, int position, long id) {
+		createAlertDialog(position);
+		builder.create().show();
+	}
+	
+	// create an alert as onListItemClick menu
+    private AlertDialog.Builder createAlertDialog(final int position) {
+    	
+    	builder = new AlertDialog.Builder(getActivity());
+    	builder.setTitle("Select an operation");
+    	builder.setCancelable(true);
+		
+    	String[] operations = { "Edit task", "Delete task" };
+    	
+		builder.setItems(operations, new DialogInterface.OnClickListener() {
+			
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+				
+					case 0: Intent editIntent = new Intent(getActivity(),
+							UpdateTaskActivity.class);
+							editIntent.putExtra("task id",
+									historyTasks.get(position).getId())
+									.putExtra("account", account);
+							startActivity(editIntent);
+							break;
+					case 1: setTaskAsDeleted(position);
+							break;
+							
+				}
+			}
+		});
+		
+		return builder;
+    }
+    
+    private void setTaskAsDeleted(final int position) {
+    	
+    	// show dialog indicating that the application is processing request
+    	dialog = new ProgressDialog(getActivity());
+    	dialogUtil.setUpProgressDialog(dialog, "Processing request...");
+        dialog.show();
+        
+        // load tasks in worker thread
+        new Thread(new Runnable() {
+        	
+        	private void sendMsg(String msgText) {
+ 				Bundle bundle = new Bundle();
+ 				Message msg = new Message();
+ 				bundle.putString("status", msgText);
+ 				msg.setData(bundle);
+ 				handler.sendMessage(msg);
+ 			}
+ 			
+ 			public void run() {
+ 				UseTasksAPI useTasksAPI = new UseTasksAPI();
+ 				useTasksAPI.setTaskAsDeleted(credential,
+ 						historyTasks.get(position).getId());
+ 				historyTasks = useTasksAPI.loadHistoryTasks(credential);
+ 				sendMsg("process complete");
+ 			}
+ 			
+        }).start();
+    	
+    }
+	
 	private class OnTokenAcquired implements AccountManagerCallback<Bundle> {    	
     	public void run(AccountManagerFuture<Bundle> future) {
     		
@@ -140,7 +222,7 @@ public class HistoryFragment extends ListFragment {
     	        Bundle bundle = future.getResult();
     	        String token = bundle.getString(AccountManager.KEY_AUTHTOKEN);
     	        
-    	        final GoogleCredential credential = new GoogleCredential();
+    	        credential = new GoogleCredential();
     	        credential.setAccessToken(token);
     	        
     	        // show dialog indicating that the application is loading tasks

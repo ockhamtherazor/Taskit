@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.util.DateTime;
+import com.google.api.services.tasks.model.Task;
 import com.taskit.client.util.DateTimeUtil;
 import com.taskit.client.util.ProgressDialogUtil;
 import com.taskit.client.util.UseTasksAPI;
@@ -32,30 +34,32 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-public class NewTaskActivity extends Activity {
-
-	// user's account
+public class UpdateTaskActivity extends Activity {
+	
+	// user account
 	private Account account;
 	
-	private String name;
-	private String description;
-	private String location;
-	private Long dateTime;
+	// access token
+	private GoogleCredential credential;
+	
+	// id of the task to be updated
+	private String taskId;
+	
+	// task to be updated
+	private Task task;
 	
 	// calendar instance to get date and time
 	private Calendar calendar = Calendar.getInstance();
 	private DateTimeUtil dateTimeUtil = new DateTimeUtil();
 	
 	// priority of the task
-	// by default it's low
-	private int priority = 0;
+	private int priority;
 	private static final String[] OPTIONS = { "Low", "Medium", "High" };
-	
-	private ProgressDialog dialog;
-	ProgressDialogUtil dialogUtil = new ProgressDialogUtil();
 	
 	// handle message returned from tasks API
 	private Handler handler;
+	private ProgressDialog dialog;
+	ProgressDialogUtil dialogUtil = new ProgressDialogUtil();
 	
 	private static final String ERROR_TAG = "NewTaskActivity.java";
 	private static final String AUTH_TOKEN_TYPE = "oauth2:https://www.googleapis.com/auth/tasks";
@@ -72,47 +76,92 @@ public class NewTaskActivity extends Activity {
     private Button timeButton;
     private Button priorityButton;
     private Button cancelButton;
-    private Button addTaskButton;
+    private Button updateTaskButton;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_task);
+        setContentView(R.layout.activity_update_task);
         
-        nameText = (EditText) findViewById(R.id.name);
-        descriptionText = (EditText) findViewById(R.id.desc);
-        locationText = (EditText) findViewById(R.id.location);
+        nameText = (EditText) findViewById(R.id.update_name);
+        descriptionText = (EditText) findViewById(R.id.update_desc);
+        locationText = (EditText) findViewById(R.id.update_location);
         
-        dateButton = (Button) findViewById(R.id.date_button);
-        timeButton = (Button) findViewById(R.id.time_button);
-        priorityButton = (Button) findViewById(R.id.priority_button);
-        cancelButton = (Button) findViewById(R.id.cancel_button);
-        addTaskButton = (Button) findViewById(R.id.add_task_button);
+        dateButton = (Button) findViewById(R.id.update_date_button);
+        timeButton = (Button) findViewById(R.id.update_time_button);
+        priorityButton = (Button) findViewById(R.id.update_priority_button);
+        cancelButton = (Button) findViewById(R.id.update_cancel_button);
+        updateTaskButton = (Button) findViewById(R.id.update_task_button);
         
-        // get user account from intent
         Bundle extras = getIntent().getExtras();
     	account = extras.getParcelable("account");
-        
+    	taskId = extras.getString("task id");
+    	
+    	AccountManager accountManager = 
+				AccountManager.get(UpdateTaskActivity.this);
+		accountManager.getAuthToken(account,
+				AUTH_TOKEN_TYPE,
+				null,
+				UpdateTaskActivity.this, 
+				new OnTokenAcquired(),
+				null);
+    	
     	handler = new Handler(new Handler.Callback() {
 			
 			public boolean handleMessage(Message msg) {
 				if (msg.getData().containsKey("status")) {
 					String text = msg.getData().getString("status");
-					if (text.equals("add complete")) {
+					if (text.equals("load complete")) {
+						
 						dialogUtil.dismissProgressDialog(dialog,
-								"Complete adding task");
+								"Complete loading task");
+						
+						nameText.setText(task.getTitle());
+						
+						if (task.getDue() != null) {
+							DateTime dateTime = task.getDue();
+							calendar.setTimeInMillis(dateTime.getValue());
+							String dateString = dateTimeUtil.getDateString(calendar);
+							String timeString = dateTimeUtil.getTimeString(calendar);
+							dateButton.setText(dateString);
+							timeButton.setText(timeString);
+						}
+						
+						if (task.getNotes() != null) {
+							String note[] = task.getNotes().split("@#*");
+							descriptionText.setText(note[2]);
+							locationText.setText(note[1]);
+							switch (Integer.valueOf(note[0])) {
+								case 0: priority = 0;
+										priorityButton
+										.setText("Priority: " + OPTIONS[0]);
+										break;
+								case 1: priority = 1;
+										priorityButton
+										.setText("Priority: " + OPTIONS[1]);
+										break;
+								case 2: priority = 2;
+										priorityButton
+										.setText("Priority: " + OPTIONS[2]);
+										break;
+							}
+						}
+						
+					} else if (text.equals("update complete")) {
+						dialogUtil.dismissProgressDialog(dialog,
+								"Complete updating task");
 						finish();
 					}
 				} else {
 					Log.e(ERROR_TAG, "fail to add task");
 					dialogUtil.dismissProgressDialog(dialog, 
-							"Fail adding task");
+							"Fail Loading task");
 				}
 				return true;
 			}
 		});
     	
-        dateButton.setOnClickListener(new View.OnClickListener() {
+    	dateButton.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
 				pickDate();
@@ -140,46 +189,73 @@ public class NewTaskActivity extends Activity {
 			}
 		});
     	
-    	addTaskButton.setOnClickListener(new View.OnClickListener() {
+    	updateTaskButton.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
 				
-				name = nameText.getText().toString();
-				description = descriptionText.getText().toString();
-				location = locationText.getText().toString();
-				dateTime = calendar.getTimeInMillis();
+				final String name = nameText.getText().toString();
+				final String description = descriptionText.getText().toString();
+				final String location = locationText.getText().toString();
+				final Long dateTime = calendar.getTimeInMillis();
 				
 				if (name == null || name.equals("")) {
 					
-					Toast.makeText(NewTaskActivity.this, 
+					Toast.makeText(UpdateTaskActivity.this,
 							"name cannot be empty", 
 							Toast.LENGTH_SHORT).show();
 					
 				} else {
 					
-					AccountManager accountManager = 
-							AccountManager.get(NewTaskActivity.this);
-					accountManager.getAuthToken(account,
-							AUTH_TOKEN_TYPE,
-							null,
-							NewTaskActivity.this, 
-							new OnTokenAcquired(),
-							null);
+					dialog = new ProgressDialog(UpdateTaskActivity.this);
+	    	        dialogUtil.setUpProgressDialog(dialog, "Updating task...");
+	    	        dialog.show();
+	    	        
+	    	        new Thread(new Runnable() {
+	    	        	
+	    	        	private void sendMsg(String msgText) {
+	    	 				Bundle bundle = new Bundle();
+	    	 				Message msg = new Message();
+	    	 				bundle.putString("status", msgText);
+	    	 				msg.setData(bundle);
+	    	 				handler.sendMessage(msg);
+	    	 			}
+	    	 			
+	    	 			public void run() {
+	    	 				
+	    	 				UseTasksAPI useTasksAPI = new UseTasksAPI();
+	    	 				Boolean result = useTasksAPI.updateTask(credential,
+	    	 						task.getId(),
+	    	 						name,
+	    	 						description,
+	    	 						location,
+	    	 						dateTime,
+	    	 						priority);
+	    	 				
+	    	 				if (result == true) {
+	    	 					sendMsg("update complete");
+	    	 				} else {
+	    	 					sendMsg("update fail");
+	    	 				}
+	    	 			}
+	    	 			
+	    	        }).start();
 					
 				}
+				
 			}
 		});
+    	
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_new_task, menu);
+        getMenuInflater().inflate(R.menu.activity_update_task, menu);
         return true;
     }
     
     private void pickDate() {
     	
-    	new DatePickerDialog(NewTaskActivity.this,
+    	new DatePickerDialog(UpdateTaskActivity.this,
 				dateListener,
 				calendar.get(Calendar.YEAR),
 				calendar.get(Calendar.MONTH),
@@ -190,7 +266,7 @@ public class NewTaskActivity extends Activity {
     
     private void pickTime() {
     	
-		new TimePickerDialog(NewTaskActivity.this,
+		new TimePickerDialog(UpdateTaskActivity.this,
 				timeListener,
 				calendar.get(Calendar.HOUR_OF_DAY), 
 				calendar.get(Calendar.MINUTE),
@@ -201,7 +277,7 @@ public class NewTaskActivity extends Activity {
     
     private void pickPriority() {
     	
-    	new AlertDialog.Builder(NewTaskActivity.this)
+    	new AlertDialog.Builder(UpdateTaskActivity.this)
     	.setTitle("Select Priority")
     	.setSingleChoiceItems(OPTIONS, priority, priorityListener)
     	.setPositiveButton("OK", dialogListener)
@@ -258,12 +334,12 @@ public class NewTaskActivity extends Activity {
     	        Bundle bundle = future.getResult();
     	        String token = bundle.getString(AccountManager.KEY_AUTHTOKEN);
     	        
-    	        final GoogleCredential credential = new GoogleCredential();
+    	        credential = new GoogleCredential();
     	        credential.setAccessToken(token);
     	        
     	        // show dialog indicating that the application is adding the task
-    	        dialog = new ProgressDialog(NewTaskActivity.this);
-    	        dialogUtil.setUpProgressDialog(dialog, "Adding task...");
+    	        dialog = new ProgressDialog(UpdateTaskActivity.this);
+    	        dialogUtil.setUpProgressDialog(dialog, "Loading task...");
     	        dialog.show();
     	        
     	        // load tasks in worker thread
@@ -279,17 +355,8 @@ public class NewTaskActivity extends Activity {
     	 			
     	 			public void run() {
     	 				UseTasksAPI useTasksAPI = new UseTasksAPI();
-    	 				Boolean result = useTasksAPI.addNewTask(credential,
-    	 						name,
-    	 						description,
-    	 						location,
-    	 						dateTime,
-    	 						priority);
-    	 				if (result == true) {
-    	 					sendMsg("add complete");
-    	 				} else {
-    	 					sendMsg("add fail");
-    	 				}
+    	 				task = useTasksAPI.getTask(credential, taskId);
+    	 				sendMsg("load complete");
     	 			}
     	 			
     	        }).start();
@@ -305,5 +372,4 @@ public class NewTaskActivity extends Activity {
     	}
 
     }
-	
 }
