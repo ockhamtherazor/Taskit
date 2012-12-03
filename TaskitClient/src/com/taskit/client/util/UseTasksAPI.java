@@ -110,9 +110,9 @@ public class UseTasksAPI {
 
 		// convert data to API format
 		String note = String.valueOf(priority)
-				+ "@#*"
+				+ "~@#"
 				+ location
-				+ "@#*"
+				+ "~@#"
 				+ description;
 		DateTime dateTime = new DateTime(date, -5);
 
@@ -148,9 +148,9 @@ public class UseTasksAPI {
 
 		// convert data to API format
 		String note = String.valueOf(priority)
-				+ "@#*"
+				+ "~@#"
 				+ location
-				+ "@#*"
+				+ "~@#"
 				+ description;
 		DateTime dateTime = new DateTime(date, -5);
 

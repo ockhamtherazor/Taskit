@@ -114,7 +114,7 @@ public class UpdateTaskActivity extends Activity {
 					if (text.equals("load complete")) {
 						
 						dialogUtil.dismissProgressDialog(dialog,
-								"Complete loading task");
+								"Completed loading task");
 						
 						nameText.setText(task.getTitle());
 						
@@ -128,7 +128,7 @@ public class UpdateTaskActivity extends Activity {
 						}
 						
 						if (task.getNotes() != null) {
-							String note[] = task.getNotes().split("@#*");
+							String note[] = task.getNotes().split("~@#");
 							descriptionText.setText(note[2]);
 							locationText.setText(note[1]);
 							switch (Integer.valueOf(note[0])) {
@@ -149,7 +149,7 @@ public class UpdateTaskActivity extends Activity {
 						
 					} else if (text.equals("update complete")) {
 						dialogUtil.dismissProgressDialog(dialog,
-								"Complete updating task");
+								"Completed updating task");
 						finish();
 					}
 				} else {

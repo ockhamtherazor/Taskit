@@ -22,14 +22,15 @@ public class LoginActivity extends Activity {
 
 	// account selected by user to access Google API
 	private Account selectedAccount = null;
+	
+	private Button accountButton;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final Button accountButton =
-        		(Button) findViewById(R.id.select_account_button);
+        accountButton = (Button) findViewById(R.id.select_account_button);
         final Button loginButton = (Button) findViewById(R.id.login_button);
         final Button exitButton = (Button) findViewById(R.id.exit_button);
         
@@ -98,6 +99,7 @@ public class LoginActivity extends Activity {
 			
 			public void onClick(DialogInterface dialog, int which) {
 				selectedAccount = accounts[which];
+				accountButton.setText(selectedAccount.name);
 			}
 		});
 		

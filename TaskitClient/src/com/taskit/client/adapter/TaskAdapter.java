@@ -59,11 +59,12 @@ public class TaskAdapter extends ArrayAdapter<Task> {
 		holder.id.setText(task.getId());
 		
 		if (task.getDue() != null) {
-			holder.date.setText(task.getDue().toString());
+			String[] due = task.getDue().toString().split("T");
+			holder.date.setText(due[0]);
 		}
 		
 		if (task.getNotes() != null) {
-			String note[] = task.getNotes().split("@#*");
+			String note[] = task.getNotes().split("~@#");
 			switch (Integer.valueOf(note[0])) {
 				case 0: holder.priority.setImageResource(R.drawable.priority_green);
 						break;

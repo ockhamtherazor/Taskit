@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,17 +21,19 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_margin="10dp"
+        android:layout_below="@id/login_text"
         android:drawSelectorOnTop="true"
         android:background="@drawable/button_background"
         android:text="@string/select_account"
         android:textColor="#FFFFFF"
         android:textSize="25sp" />
-
+    
     <Button
         android:id="@+id/facebook_account_button"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_margin="10dp"
+        android:layout_below="@id/select_account_button"
         android:background="@drawable/button_background"
         android:text="@string/enter_facebook_account"
         android:textColor="#FFFFFF"
@@ -41,7 +43,7 @@
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:weightSum="2" >
 
@@ -69,4 +71,4 @@
         
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

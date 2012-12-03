@@ -65,6 +65,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:gravity="center"
         android:background="@drawable/button_background"
         android:ems="10"
         android:inputType="text"
@@ -110,7 +111,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="2">
-        
+        
         <Button
             android:id="@+id/date_button"
             android:layout_width="wrap_content"
@@ -121,7 +122,7 @@
             android:text="@string/date_button"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
-        
+        
         <Button
             android:id="@+id/time_button"
             android:layout_width="wrap_content"

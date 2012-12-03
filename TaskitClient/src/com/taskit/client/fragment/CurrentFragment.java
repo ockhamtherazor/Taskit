@@ -88,10 +88,10 @@ public class CurrentFragment extends ListFragment {
 					String text = msg.getData().getString("status");
 					if (text.equals("load complete")) {
 						dialogUtil.dismissProgressDialog(dialog,
-							"Complete loading tasks");
+							"Completed loading tasks");
 					} else if (text.equals("process complete")) {
 						dialogUtil.dismissProgressDialog(dialog,
-								"Complete processing");
+								"Completed processing");
 					}
 					
 					// set up adapter to show task list
@@ -278,6 +278,7 @@ public class CurrentFragment extends ListFragment {
     	 			public void run() {
     	 				UseTasksAPI useTasksAPI = new UseTasksAPI();
     	 				currentTasks = useTasksAPI.loadCurrentTasks(credential);
+    	 				//TODO
     	 				sendMsg("load complete");
     	 			}
     	 			

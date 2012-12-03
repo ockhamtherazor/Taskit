@@ -100,7 +100,7 @@ public class NewTaskActivity extends Activity {
 					String text = msg.getData().getString("status");
 					if (text.equals("add complete")) {
 						dialogUtil.dismissProgressDialog(dialog,
-								"Complete adding task");
+								"Completed adding task");
 						finish();
 					}
 				} else {
