@@ -15,6 +15,7 @@ import com.taskit.client.UpdateTaskActivity;
 import com.taskit.client.adapter.TaskAdapter;
 import com.taskit.client.util.IDataPuller;
 import com.taskit.client.util.ProgressDialogUtil;
+import com.taskit.client.util.TaskUtil;
 import com.taskit.client.util.UseTasksAPI;
 
 import android.accounts.Account;
@@ -62,6 +63,9 @@ public class HistoryFragment extends ListFragment {
 	
 	// handle message returned from tasks API
 	private Handler handler;
+	
+	UseTasksAPI useTasksAPI = new UseTasksAPI();
+	TaskUtil taskUtil = new TaskUtil();
 	
 	private static final String ERROR_TAG = "TaskActivity.java";
 	private static final String AUTH_TOKEN_TYPE = "oauth2:https://www.googleapis.com/auth/tasks";
@@ -202,10 +206,10 @@ public class HistoryFragment extends ListFragment {
  			}
  			
  			public void run() {
- 				UseTasksAPI useTasksAPI = new UseTasksAPI();
  				useTasksAPI.setTaskAsDeleted(credential,
  						historyTasks.get(position).getId());
  				historyTasks = useTasksAPI.loadHistoryTasks(credential);
+ 				historyTasks = taskUtil.sortTasks(historyTasks);
  				sendMsg("process complete");
  			}
  			
@@ -242,8 +246,9 @@ public class HistoryFragment extends ListFragment {
     	 			}
     	 			
     	 			public void run() {
-    	 				UseTasksAPI useTasksAPI = new UseTasksAPI();
+    	 				
     	 				historyTasks = useTasksAPI.loadHistoryTasks(credential);
+    	 				historyTasks = taskUtil.sortTasks(historyTasks);
     	 				sendMsg("load complete");
     	 			}
     	 			

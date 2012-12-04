@@ -15,6 +15,7 @@ import com.taskit.client.UpdateTaskActivity;
 import com.taskit.client.adapter.TaskAdapter;
 import com.taskit.client.util.IDataPuller;
 import com.taskit.client.util.ProgressDialogUtil;
+import com.taskit.client.util.TaskUtil;
 import com.taskit.client.util.UseTasksAPI;
 
 import android.accounts.Account;
@@ -62,6 +63,9 @@ public class CurrentFragment extends ListFragment {
 		
 	// handle message returned from tasks API
 	private Handler handler;
+	
+	UseTasksAPI useTasksAPI = new UseTasksAPI();
+	TaskUtil taskUtil = new TaskUtil();
 		
 	private static final String ERROR_TAG = "TaskActivity.java";
 	private static final String AUTH_TOKEN_TYPE = "oauth2:https://www.googleapis.com/auth/tasks";
@@ -135,6 +139,7 @@ public class CurrentFragment extends ListFragment {
 	public void onResume() {
 		super.onResume();
 		
+		
 		AccountManager accountManager = 
 				AccountManager.get(getActivity());
 		accountManager.getAuthToken(account,
@@ -206,10 +211,10 @@ public class CurrentFragment extends ListFragment {
  			}
  			
  			public void run() {
- 				UseTasksAPI useTasksAPI = new UseTasksAPI();
  				useTasksAPI.setTaskAsCompleted(credential,
  						currentTasks.get(position).getId());
  				currentTasks = useTasksAPI.loadCurrentTasks(credential);
+ 				currentTasks = taskUtil.sortTasks(currentTasks);
  				sendMsg("process complete");
  			}
  			
@@ -236,10 +241,10 @@ public class CurrentFragment extends ListFragment {
  			}
  			
  			public void run() {
- 				UseTasksAPI useTasksAPI = new UseTasksAPI();
  				useTasksAPI.setTaskAsDeleted(credential,
  						currentTasks.get(position).getId());
  				currentTasks = useTasksAPI.loadCurrentTasks(credential);
+ 				currentTasks = taskUtil.sortTasks(currentTasks);
  				sendMsg("process complete");
  			}
  			
@@ -276,8 +281,8 @@ public class CurrentFragment extends ListFragment {
     	 			}
     	 			
     	 			public void run() {
-    	 				UseTasksAPI useTasksAPI = new UseTasksAPI();
     	 				currentTasks = useTasksAPI.loadCurrentTasks(credential);
+    	 				currentTasks = taskUtil.sortTasks(currentTasks);
     	 				//TODO
     	 				sendMsg("load complete");
     	 			}
