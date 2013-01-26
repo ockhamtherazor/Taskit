@@ -214,7 +214,9 @@ public class CurrentFragment extends ListFragment {
  				useTasksAPI.setTaskAsCompleted(credential,
  						currentTasks.get(position).getId());
  				currentTasks = useTasksAPI.loadCurrentTasks(credential);
- 				currentTasks = taskUtil.sortTasks(currentTasks);
+ 				if (currentTasks.size() > 1) {
+ 					currentTasks = taskUtil.sortTasks(currentTasks);
+ 				}
  				sendMsg("process complete");
  			}
  			
@@ -282,7 +284,9 @@ public class CurrentFragment extends ListFragment {
     	 			
     	 			public void run() {
     	 				currentTasks = useTasksAPI.loadCurrentTasks(credential);
-    	 				currentTasks = taskUtil.sortTasks(currentTasks);
+    	 				if (currentTasks.size() > 1) {
+    	 					currentTasks = taskUtil.sortTasks(currentTasks);
+    	 				}
     	 				//TODO
     	 				sendMsg("load complete");
     	 			}

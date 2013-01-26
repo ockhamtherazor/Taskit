@@ -86,7 +86,7 @@ public class LoginActivity extends Activity {
     	builder.setTitle("Select your Google account");
     	builder.setCancelable(true);
     	
-    	// get all google accounts of the device
+    	// get all google accounts on the device
     	AccountManager accountManager = AccountManager.get(LoginActivity.this);
     	final Account[] accounts = accountManager.getAccountsByType("com.google");
     	final int size = accounts.length;

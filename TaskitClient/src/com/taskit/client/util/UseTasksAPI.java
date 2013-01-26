@@ -20,7 +20,7 @@ import com.google.api.services.tasks.model.Task;
 
 public class UseTasksAPI {
 	
-	private static final String API_KEY = "AIzaSyD_H4i4MdHS5OVPXHbmosl7YKuIVZRvz5I";
+	private static final String API_KEY = "";
 	private static final String ERROR_TAG = "UseTasksAPI.java";
 	
 	public List<Task> loadCurrentTasks(GoogleCredential credential) {

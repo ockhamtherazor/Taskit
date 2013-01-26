@@ -209,7 +209,9 @@ public class HistoryFragment extends ListFragment {
  				useTasksAPI.setTaskAsDeleted(credential,
  						historyTasks.get(position).getId());
  				historyTasks = useTasksAPI.loadHistoryTasks(credential);
- 				historyTasks = taskUtil.sortTasks(historyTasks);
+ 				if (historyTasks.size() > 1) {
+ 					historyTasks = taskUtil.sortTasks(historyTasks);
+ 				}
  				sendMsg("process complete");
  			}
  			
@@ -248,7 +250,9 @@ public class HistoryFragment extends ListFragment {
     	 			public void run() {
     	 				
     	 				historyTasks = useTasksAPI.loadHistoryTasks(credential);
-    	 				historyTasks = taskUtil.sortTasks(historyTasks);
+    	 				if (historyTasks.size() > 1) {
+    	 					historyTasks = taskUtil.sortTasks(historyTasks);
+    	 				}
     	 				sendMsg("load complete");
     	 			}
     	 			
